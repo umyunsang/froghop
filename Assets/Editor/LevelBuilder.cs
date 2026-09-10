@@ -566,19 +566,23 @@ public static class LevelBuilder
         // Each starts at its low point. The collider is 2.5 tall around a centre pivot, so a
         // base of y=1.4 puts the underside at 0.15 - low enough to gate a player walking the
         // floor - and the retracted top clears the platform above it.
-        // Kept clear of P1's left edge; the 2.6-wide collider would otherwise clip its corner.
-        MakeSpikeHead(root, new Vector3(24.5f, 1.4f, 0f), SpikeHead.Axis.Vertical, 4.6f, 7f);
+        // Section B's only platform-free column is x23..26, which is also where the player lands
+        // after gap 1 - a floor-slamming head there would hit them mid-landing with no read.
+        // So it rests above walking height and instead gates the optional climb up to P1.
+        MakeSpikeHead(root, new Vector3(25f, 2.6f, 0f), SpikeHead.Axis.Vertical, 3.4f, 6f);
         // Runs above P2 rather than through it, threatening anyone standing on the platform.
         MakeSpikeHead(root, new Vector3(30f, 8f, 0f), SpikeHead.Axis.Horizontal, 6f, 5f);
         MakeSpikeHead(root, new Vector3(49f, 11f, 0f), SpikeHead.Axis.Horizontal, 6f, 5f);
         MakeSpikeHead(root, new Vector3(74f, 4.4f, 0f), SpikeHead.Axis.Vertical, 4f, 6f);
 
         // ---- Saws ----
-        MakeSaw(root, new Vector3(47f, 1.1f, 0f), Saw.Axis.Horizontal, 9f, 3.2f);
+        MakeSaw(root, new Vector3(47f, 1.1f, 0f), Saw.Axis.Horizontal, 8f, 3.2f);
         MakeSaw(root, new Vector3(83f, 1.1f, 0f), Saw.Axis.Horizontal, 7f, 2.6f);
 
         // ---- Static spikes ----
-        for (int i = 0; i < 3; i++) MakeSpikes(root, new Vector3(56f + i, 0f, 0f));
+        // Section B already gates the player with two spike heads; a floor spike patch there
+        // only fits between P2 and gap 2, which leaves no room to land the hop before the gap.
+        for (int i = 0; i < 2; i++) MakeSpikes(root, new Vector3(57f + i, 0f, 0f));
         for (int i = 0; i < 2; i++) MakeSpikes(root, new Vector3(68f + i, 0f, 0f));
 
         // ---- Crates: scenery that also doubles as a step ----

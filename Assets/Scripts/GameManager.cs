@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
         if (toastText != null) toastText.text = "";
 
         RefreshFruitLabel();
+        AudioManagerProc.RestoreBgm();
         StartCoroutine(FadeIn());
     }
 

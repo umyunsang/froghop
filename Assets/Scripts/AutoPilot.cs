@@ -113,6 +113,13 @@ public class AutoPilot : MonoBehaviour, IPlayerInput
                 horizontal = 1f;
                 if (body.position.x >= arg) Advance("reached x=" + arg);
                 break;
+            case 'G':
+                // Guarded advance: hold position while a *moving* hazard occupies the space
+                // ahead, the way a player waits for a spike head to retract. Static spikes are
+                // deliberately not checked - those must be jumped, and waiting would deadlock.
+                horizontal = MovingHazardAhead() ? 0f : 1f;
+                if (body.position.x >= arg) Advance("guarded reach x=" + arg);
+                break;
             case 'L':
                 horizontal = -1f;
                 if (body.position.x <= arg) Advance("reached x=" + arg);
@@ -135,6 +142,20 @@ public class AutoPilot : MonoBehaviour, IPlayerInput
                 Advance("unknown '" + cmd + "'");
                 break;
         }
+    }
+
+    /// <summary>True when a spike head or saw is inside the danger box just ahead and above.</summary>
+    private bool MovingHazardAhead()
+    {
+        Vector2 centre = (Vector2)body.position + new Vector2(2.0f, 1.2f);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(centre, new Vector2(4.2f, 3.6f), 0f);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i] == null) continue;
+            if (hits[i].GetComponent<SpikeHead>() != null || hits[i].GetComponent<Saw>() != null)
+                return true;
+        }
+        return false;
     }
 
     private void Advance(string note)

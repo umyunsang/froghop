@@ -85,6 +85,18 @@ public class AudioManagerProc : MonoBehaviour
         if (a.bgmSource != null) a.bgmSource.volume = Mathf.Clamp01(volume);
     }
 
+    /// <summary>
+    /// Undo any ducking. This object survives scene loads, so without an explicit restore the
+    /// quiet set on game over would persist through every retry for the rest of the session.
+    /// </summary>
+    public static void RestoreBgm()
+    {
+        AudioManagerProc a = Instance;
+        if (a.bgmSource == null) return;
+        a.bgmSource.volume = a.bgmVolume;
+        if (!a.bgmSource.isPlaying) a.bgmSource.Play();
+    }
+
     private void Play(AudioClip clip, float volume)
     {
         if (clip == null || sfxSource == null) return;
